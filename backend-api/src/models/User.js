@@ -1,0 +1,17 @@
+const mongoose = require('mongoose');
+
+const UserSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  password: { type: String, required: true }, // Se guardará cifrada con bcrypt
+  avatarUrl: { type: String, default: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150' },
+  bio: { type: String, default: '' },
+  favorites: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Restaurant'
+  }]
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('User', UserSchema);

@@ -1,25 +1,38 @@
+# Android exclusions (recursive)
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.gradle/
 local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+build/
+android-app/.gradle/
+android-app/local.properties
+android-app/build/
+android-app/app/build/
+android-app/.idea/
 
-# Agent / AI Tooling
+# Node.js backend exclusions
+backend-api/node_modules/
+backend-api/dist/
+backend-api/.env
+backend-api/.env.local
+backend-api/.env.production
+backend-api/npm-debug.log*
+backend-api/yarn-debug.log*
+backend-api/yarn-error.log*
+
+# Tooling and IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 .agent/
 .agents/
 .claude/
 .gemini/
 skills-lock.json
-
-# Android Studio / IntelliJ IDEA
-.idea/
+.DS_Store
