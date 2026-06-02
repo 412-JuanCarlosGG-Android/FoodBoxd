@@ -1,0 +1,25 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Agent / AI Tooling
+.agent/
+.agents/
+.claude/
+.gemini/
+skills-lock.json
+
+# Android Studio / IntelliJ IDEA
+.idea/
