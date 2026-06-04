@@ -118,4 +118,16 @@ exports.toggleFavorite = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+
+  exports.getFavorites = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate('favorites');
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    res.json(user.favorites);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/db');
+const errorHandler = require('./src/middleware/errorHandler');
 
 // Cargar variables de entorno
 dotenv.config();
@@ -32,10 +33,7 @@ app.use((req, res, next) => {
 });
 
 // Middleware de manejo de errores global
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Error interno del servidor' });
-});
+app.use(errorHandler);
 
 // Levantar el servidor
 const PORT = process.env.PORT || 3000;

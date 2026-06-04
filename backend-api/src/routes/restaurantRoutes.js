@@ -9,6 +9,7 @@ router.get('/recommended', restaurantController.getRecommendedRestaurants);
 router.get('/promotions', restaurantController.getPromotions);
 router.get('/ranking', restaurantController.getTopRankedRestaurants);
 router.get('/search', restaurantController.searchRestaurants);
+router.get('/categories', restaurantController.getCategories);
 router.get('/:id', restaurantController.getRestaurantById);
 
 module.exports = router;
