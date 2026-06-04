@@ -146,3 +146,16 @@ exports.getRestaurantById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// GET categorias únicas de restaurantes
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await Restaurant.distinct('category');
+    if (categories.length === 0) {
+      return res.json(['Italiana', 'Sushi', 'Mexicana', 'Americana', 'China']);
+    }
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
