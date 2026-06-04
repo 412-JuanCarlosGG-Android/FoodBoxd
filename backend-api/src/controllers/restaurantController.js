@@ -31,9 +31,12 @@ exports.getAllRestaurants = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const { category } = req.query;
 
-    const dbRestaurants = await Restaurant.find().skip(skip).limit(limit);
-    const total = await Restaurant.countDocuments();
+    const filter = category ? { category: new RegExp(category, 'i') } : {};
+
+    const dbRestaurants = await Restaurant.find(filter).skip(skip).limit(limit);
+    const total = await Restaurant.countDocuments(filter);
 
     if (dbRestaurants.length === 0 && page === 1) {
       return res.json({
