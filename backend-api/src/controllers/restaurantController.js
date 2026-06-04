@@ -28,11 +28,28 @@ const mockRestaurants = [
 
 exports.getAllRestaurants = async (req, res) => {
   try {
-    const dbRestaurants = await Restaurant.find();
-    if (dbRestaurants.length === 0) {
-      return res.json(mockRestaurants);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const dbRestaurants = await Restaurant.find().skip(skip).limit(limit);
+    const total = await Restaurant.countDocuments();
+
+    if (dbRestaurants.length === 0 && page === 1) {
+      return res.json({
+        data: mockRestaurants,
+        total: mockRestaurants.length,
+        page: 1,
+        totalPages: 1
+      });
     }
-    res.json(dbRestaurants);
+
+    res.json({
+      data: dbRestaurants,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
