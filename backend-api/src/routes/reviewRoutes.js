@@ -3,10 +3,13 @@ const router = express.Router();
 const reviewController = require('../controllers/reviewController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Ruta pública — cualquiera puede ver las reseñas
+// Rutas públicas
 router.get('/restaurant/:restaurantId', reviewController.getReviewsByRestaurant);
+router.get('/user/:userId', reviewController.getReviewsByUser);
 
-// Ruta protegida — solo usuarios autenticados pueden crear reseñas
+// Rutas protegidas
 router.post('/restaurant/:restaurantId', authMiddleware, reviewController.createReview);
+router.put('/:reviewId', authMiddleware, reviewController.updateReview);
+router.delete('/:reviewId', authMiddleware, reviewController.deleteReview);
 
 module.exports = router;
