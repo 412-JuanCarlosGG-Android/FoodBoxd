@@ -22,6 +22,7 @@ backend-api/npm-debug.log*
 backend-api/yarn-debug.log*
 backend-api/yarn-error.log*
 
+.env
 # Tooling and IDEs
 .idea/
 .vscode/
