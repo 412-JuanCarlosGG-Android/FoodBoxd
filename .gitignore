@@ -1,18 +1,4 @@
-# Android exclusions (recursive)
-*.iml
-.gradle/
-local.properties
-.externalNativeBuild/
-.cxx/
-captures/
-build/
-android-app/.gradle/
-android-app/local.properties
-android-app/build/
-android-app/app/build/
-android-app/.idea/
-
-# Node.js backend exclusions
+# Node.js
 backend-api/node_modules/
 backend-api/dist/
 backend-api/.env
@@ -23,17 +9,21 @@ backend-api/yarn-debug.log*
 backend-api/yarn-error.log*
 
 .env
-# Tooling and IDEs
+
+# Gradle (residuo de configuración anterior)
+.gradle/
+
+# IDEs y herramientas
 .idea/
 .vscode/
+.DS_Store
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
+
+# Claude Code
+.claude/
 .agent/
 .agents/
-.claude/
 .gemini/
 skills-lock.json
-.DS_Store
+CLAUDE.md

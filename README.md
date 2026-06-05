@@ -1,92 +1,82 @@
-# FoodBoxd - App de Reseñas de Restaurantes
+# FoodBoxd — API Backend
 
-FoodBoxd es una aplicación móvil para reseñas de restaurantes inspirada en el formato de red social de cine (como Letterboxd), pero adaptada al mundo gastronómico. Este proyecto está diseñado para la materia de **Desarrollo Móvil Android** y se compone de un frontend móvil en Android (Jetpack Compose) y una API backend en Node.js conectada a MongoDB Atlas.
-
----
-
-## 📂 Estructura del Monorepo
-
-Para facilitar el desarrollo simultáneo y unificar el historial de contribuciones del equipo, el proyecto está organizado como un **Monorepo**:
-
-*   **`/android-app`**: Contiene la aplicación nativa de Android desarrollada en Kotlin utilizando Jetpack Compose, Arquitectura Limpia (Clean Architecture), patrón MVVM e inyección de dependencias manual.
-*   **`/backend-api`**: Contiene la API REST desarrollada en Node.js, Express y Mongoose para gestionar los datos y la lógica del negocio.
+API REST para FoodBoxd, una app de reseñas de restaurantes inspirada en Letterboxd. Desarrollada con Node.js, Express y MongoDB Atlas.
 
 ---
 
-## 👥 Distribución del Trabajo (5 Integrantes)
+## Tecnologías
 
-El equipo está dividido en 3 áreas técnicas clave para asegurar la participación equitativa de todos los integrantes mediante commits individuales:
-
-### 🎨 Área 1: Frontend - Android & Jetpack Compose (2 Integrantes)
-Se encargan del diseño visual responsivo de la interfaz, el manejo del estado local de la UI y la integración con la API REST.
-
-*   **Integrante A (UI Principal y Navegación)**
-    *   *Responsabilidad*: Estructura de navegación inferior (`FoodBoxdNavGraph`), pantalla de **Inicio** (`HomeScreen`), **Búsqueda** (`SearchScreen`) y **Perfil** (`ProfileScreen`).
-    *   *Foco técnico*: Ciclo de vida de composables, layouts responsivos, buscador reactivo y carga de imágenes eficientes (Coil).
-*   **Integrante B (UI Detalle e Interacción de Datos)**
-    *   *Responsabilidad*: Pantallas de **Detalle de Restaurante** (`DetailScreen`), **Mejores Rankeados / Ranking** (`RankingScreen`) y **Favoritos** (`FavoritesScreen`).
-    *   *Foco técnico*: Formularios reactivos (caja de reseñas, calificación con estrellas), sincronización de estados y ViewModels con flujos reactivos (Kotlin Flow).
-
-### ⚙️ Área 2: Backend - Node.js API (2 Integrantes)
-Se encargan de la lógica del servidor, la seguridad y de exponer los endpoints que consumirá el frontend.
-
-*   **Integrante C (Servidor y Rutas de Restaurantes)**
-    *   *Responsabilidad*: Creación del servidor Express, arquitectura de carpetas backend, endpoints de consulta de restaurantes (`/api/restaurants`), búsqueda por texto y ordenamientos.
-*   **Integrante D (Autenticación y Reseñas)**
-    *   *Responsabilidad*: Registro e inicio de sesión de usuarios (cifrado con bcrypt y tokens JWT), endpoints para escribir y consultar reseñas (`/api/reviews`) y middleware de seguridad.
-
-### 💾 Área 3: Base de Datos & DevOps - MongoDB Atlas (1 Integrante)
-Se encarga de modelar los datos y asegurar la disponibilidad del backend en la nube.
-
-*   **Integrante E (Administrador de Base de Datos - DBA)**
-    *   *Responsabilidad*: Configurar el clúster en la nube en **MongoDB Atlas**, definir los esquemas de Mongoose (`User`, `Restaurant`, `Review`), escribir scripts de carga inicial de datos de prueba (*seeding*) y asegurar la consistencia relacional.
+- **Node.js** + **Express**
+- **Mongoose** / **MongoDB Atlas**
+- **bcrypt** para cifrado de contraseñas
+- **JWT** para autenticación
 
 ---
 
-## 🛠️ Instrucciones de Ejecución
+## Estructura del proyecto
 
-### 📱 1. Frontend (Android)
-1. Abre **Android Studio**.
-2. Selecciona **Open** y abre **únicamente** la carpeta `android-app/` de este repositorio.
-3. Haz clic en **Sync Project with Gradle Files** para descargar las dependencias de navegación y Coil.
-4. Ejecuta el proyecto en tu emulador o dispositivo real.
-*Nota: Actualmente el frontend está configurado con repositorios de prueba (`FakeRepository`) para funcionar de forma 100% interactiva sin conexión a internet.*
+```
+backend-api/
+├── app.js              # Entrada, middlewares, montaje de rutas
+└── src/
+    ├── config/
+    │   └── db.js       # Conexión a MongoDB Atlas
+    ├── controllers/    # Lógica de cada endpoint
+    ├── models/         # Esquemas Mongoose (User, Restaurant, Review)
+    └── routes/         # Definición de rutas
+```
 
-### ⚙️ 2. Backend (Node.js)
-1. Entra a la carpeta del backend en tu terminal:
+---
+
+## Endpoints disponibles
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/restaurants` | Lista todos los restaurantes |
+| GET | `/api/restaurants/featured` | Restaurantes destacados |
+| GET | `/api/restaurants/recommended` | Restaurantes recomendados |
+| GET | `/api/restaurants/promotions` | Restaurantes en promoción |
+| GET | `/api/restaurants/ranking` | Ranking por calificación |
+| GET | `/api/restaurants/search?q=` | Búsqueda por texto |
+| GET | `/api/restaurants/:id` | Detalle de un restaurante |
+| GET | `/api/reviews/restaurant/:restaurantId` | Reseñas de un restaurante |
+| POST | `/api/reviews/restaurant/:restaurantId` | Crear reseña |
+| POST | `/api/users/register` | Registro de usuario |
+| POST | `/api/users/login` | Inicio de sesión (devuelve JWT) |
+| GET | `/api/users/profile/:id` | Perfil de usuario |
+| PUT | `/api/users/profile/:id` | Actualizar perfil |
+| PUT | `/api/users/profile/:id/favorite` | Agregar/quitar favorito |
+
+---
+
+## Instalación y ejecución
+
+```bash
+cd backend-api
+npm install
+```
+
+Crea un archivo `.env` basándote en `.env.example`:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/foodboxd
+JWT_SECRET=tu_clave_secreta_jwt
+```
+
+```bash
+npm run dev    # desarrollo con hot reload (nodemon)
+npm start      # producción
+```
+
+---
+
+## Flujo de trabajo Git
+
+1. Nunca trabajes directo en `main`. Crea tu rama desde la última versión:
    ```bash
-   cd backend-api
+   git checkout main && git pull
+   git checkout -b feature/nombre-del-cambio
    ```
-2. Instala las dependencias necesarias:
-   ```bash
-   npm install
-   ```
-3. Crea un archivo `.env` en la raíz de `backend-api` basándote en `.env.example` y añade tus credenciales de MongoDB Atlas:
-   ```env
-   PORT=3000
-   MONGODB_URI=mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/foodboxd
-   JWT_SECRET=tu_clave_secreta_jwt
-   ```
-4. Inicia el servidor en modo desarrollo:
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 🔀 Flujo de Trabajo en Git y Pull Requests
-
-Para mantener el repositorio libre de conflictos y registrar los commits individuales:
-
-1.  **Nunca trabajes en `main`**: Todos los desarrollos nuevos deben crearse en ramas auxiliares.
-    *   Crea tu rama desde la última versión de `main`:
-        ```bash
-        git checkout main
-        git pull
-        git checkout -b feature/mi-pantalla-o-endpoint
-        ```
-2.  **Sube tu rama y crea un Pull Request (PR)**:
-    *   Sube tus cambios: `git push origin feature/mi-pantalla-o-endpoint`
-    *   Ve a GitHub y abre un Pull Request hacia la rama `main`.
-3.  **Revisión Obligatoria**:
-    *   Al menos un integrante del equipo debe revisar el código en GitHub y validar que no rompa la compilación antes de autorizar el *Merge*.
+2. Sube tu rama y abre un **Pull Request** hacia `main`.
+3. Al menos un integrante debe revisar el PR antes de hacer merge.
