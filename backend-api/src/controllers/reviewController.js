@@ -2,6 +2,19 @@ const Review = require('../models/Review');
 const Restaurant = require('../models/Restaurant');
 const User = require('../models/User');
 
+const updateRestaurantRating = async (restaurantId) => {
+  const reviews = await Review.find({ restaurantId });
+  const reviewCount = reviews.length;
+  const avgRating = reviewCount > 0
+    ? reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviewCount
+    : 0;
+
+  await Restaurant.findByIdAndUpdate(restaurantId, {
+    rating: parseFloat(avgRating.toFixed(1)),
+    reviewCount
+  });
+};
+
 exports.getReviewsByRestaurant = async (req, res) => {
   try {
     const reviews = await Review.find({ restaurantId: req.params.restaurantId }).sort({ createdAt: -1 });
@@ -40,15 +53,7 @@ exports.createReview = async (req, res) => {
     });
 
     await review.save();
-
-    const reviews = await Review.find({ restaurantId });
-    const reviewCount = reviews.length;
-    const avgRating = reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviewCount;
-
-    await Restaurant.findByIdAndUpdate(restaurantId, {
-      rating: parseFloat(avgRating.toFixed(1)),
-      reviewCount
-    });
+    await updateRestaurantRating(restaurantId);
 
     res.status(201).json(review);
   } catch (error) {
@@ -69,18 +74,10 @@ exports.updateReview = async (req, res) => {
       return res.status(403).json({ error: 'No tienes permiso para editar esta resena' });
     }
 
-    review.rating = rating || review.rating;
-    review.comment = comment || review.comment;
+    review.rating = rating !== undefined ? rating : review.rating;
+    review.comment = comment !== undefined ? comment : review.comment;
     await review.save();
-
-    const reviews = await Review.find({ restaurantId: review.restaurantId });
-    const reviewCount = reviews.length;
-    const avgRating = reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviewCount;
-
-    await Restaurant.findByIdAndUpdate(review.restaurantId, {
-      rating: parseFloat(avgRating.toFixed(1)),
-      reviewCount
-    });
+    await updateRestaurantRating(review.restaurantId);
 
     res.json(review);
   } catch (error) {
@@ -101,17 +98,7 @@ exports.deleteReview = async (req, res) => {
 
     const restaurantId = review.restaurantId;
     await review.deleteOne();
-
-    const reviews = await Review.find({ restaurantId });
-    const reviewCount = reviews.length;
-    const avgRating = reviewCount > 0
-      ? reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviewCount
-      : 0;
-
-    await Restaurant.findByIdAndUpdate(restaurantId, {
-      rating: parseFloat(avgRating.toFixed(1)),
-      reviewCount
-    });
+    await updateRestaurantRating(restaurantId);
 
     res.json({ message: 'Resena eliminada correctamente' });
   } catch (error) {
