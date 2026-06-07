@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Restaurant = require('../models/Restaurant');
 
 // Mock fallback data to prevent crashing and allow API tests without DB connection
@@ -39,9 +40,13 @@ exports.getAllRestaurants = async (req, res) => {
     const total = await Restaurant.countDocuments(filter);
 
     if (dbRestaurants.length === 0 && page === 1) {
+      const fallbackRestaurants = category
+        ? mockRestaurants.filter(r => r.category.match(new RegExp(category, 'i')))
+        : mockRestaurants;
+
       return res.json({
-        data: mockRestaurants,
-        total: mockRestaurants.length,
+        data: fallbackRestaurants,
+        total: fallbackRestaurants.length,
         page: 1,
         totalPages: 1
       });
@@ -132,6 +137,14 @@ exports.searchRestaurants = async (req, res) => {
 
 exports.getRestaurantById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      const mockR = mockRestaurants.find(r => r._id === req.params.id);
+      if (!mockR) {
+        return res.status(404).json({ error: 'Restaurante no encontrado' });
+      }
+      return res.json(mockR);
+    }
+
     const restaurant = await Restaurant.findById(req.params.id);
     if (!restaurant) {
       // Intentar buscar en mock local
